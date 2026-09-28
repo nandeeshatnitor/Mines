@@ -261,16 +261,21 @@ class Game:
             self.board.flag_all_mines()
 
 
+# Red (pair 3) is reserved for mines/flags, so number 3 uses cyan instead of
+# the classic red. Only 6 non-red hues are available in the base palette, so
+# 6-8 (rare - they need a very high local mine density) reuse 1/2/7's hue at
+# normal weight instead of bold, to stay visually distinct from 1/2/8.
 NUM_COLOR_PAIR = {
-    1: 1,
-    2: 2,
-    3: 3,
-    4: 4,
-    5: 5,
-    6: 6,
-    7: 7,
-    8: 8,
+    1: 1,  # blue
+    2: 2,  # green
+    3: 6,  # cyan
+    4: 4,  # magenta
+    5: 5,  # yellow
+    6: 1,  # blue, normal weight
+    7: 2,  # green, normal weight
+    8: 7,  # white, normal weight
 }
+NUM_BOLD = {1: True, 2: True, 3: True, 4: True, 5: True, 6: False, 7: False, 8: False}
 
 
 def init_colors():
@@ -297,7 +302,7 @@ def init_colors():
     curses.init_pair(15, curses.COLOR_BLACK, curses.COLOR_WHITE)  # cursor highlight fallback
 
 
-CELL_W = 2  # on-screen columns used per board cell
+CELL_W = 3  # on-screen columns per board cell: glyph, pad, grid line
 
 
 class UI:
@@ -582,7 +587,7 @@ class UI:
     def compute_layout(self, h, w, rows, cols):
         header_lines = 3
         footer_lines = 2
-        col_header_lines = 1
+        col_header_lines = 2  # column numbers + a horizontal rule under them
         row_label_w = len(str(rows - 1)) + 1
 
         avail_h = h - header_lines - footer_lines - col_header_lines
@@ -635,7 +640,8 @@ class UI:
         n = b.counts[r][c]
         if n == 0:
             return ".", self.attr(0)
-        return str(n), self.attr(NUM_COLOR_PAIR.get(n, 0), curses.A_BOLD)
+        bold = curses.A_BOLD if NUM_BOLD.get(n, True) else 0
+        return str(n), self.attr(NUM_COLOR_PAIR.get(n, 0), bold)
 
     def draw_game(self, game, board_top, board_left, view_rows, view_cols,
                   scroll_y, scroll_x, cur_r, cur_c):
@@ -659,17 +665,19 @@ class UI:
         elif game.status == Game.LOST:
             self.safe_addstr(1, len(status_line) + 4, "BOOM! Game over.", self.attr(14, curses.A_BOLD))
 
-        # column header
+        # column header + a rule separating it from the board
         row_label_w = board_left
-        hdr_y = board_top - 1
+        hdr_y = board_top - 2
+        rule_y = board_top - 1
         header = []
         for c in range(scroll_x, scroll_x + view_cols):
-            header.append(f"{c % 100:>2}"[-CELL_W:])
+            header.append(f"{c % 100:>2}|")
         self.safe_addstr(hdr_y, row_label_w, "".join(header), self.attr(8))
+        self.safe_addstr(rule_y, 0, "-" * (row_label_w + view_cols * CELL_W), self.attr(8))
 
         for i, r in enumerate(range(scroll_y, scroll_y + view_rows)):
             y = board_top + i
-            label = f"{r:>{row_label_w - 1}} "
+            label = f"{r:>{row_label_w - 1}}|"
             self.safe_addstr(y, 0, label, self.attr(8))
             for j, c in enumerate(range(scroll_x, scroll_x + view_cols)):
                 x = board_left + j * CELL_W
@@ -677,6 +685,7 @@ class UI:
                 if r == cur_r and c == cur_c:
                     attr = attr | curses.A_REVERSE
                 self.safe_addstr(y, x, glyph + " ", attr)
+                self.safe_addstr(y, x + 2, "|", self.attr(8))
 
         footer_y = board_top + view_rows + 1
         if view_rows < b.rows or view_cols < b.cols:

@@ -32,13 +32,26 @@ release archive) and a `mines` command is added to your `PATH`:
 pip install .
 
 # or straight from a tagged release, without cloning
-pip install git+https://github.com/nandeeshatnitor/Mines.git@v1.0.0
+pip install git+https://github.com/nandeeshatnitor/Mines.git@v1.0.1
 ```
 
 Then just run:
 
 ```bash
 mines
+```
+
+**If `mines` isn't found after installing** (common on Windows), pip installed the
+script outside your `PATH`. Look for a line like this in the install output:
+
+```
+WARNING: The script mines.exe is installed in '...\Scripts' which is not on PATH.
+```
+
+Either add that folder to your `PATH`, or run the game via:
+
+```bash
+python -m minesweeper
 ```
 
 It clears the screen into the terminal's alternate-screen buffer (the same

@@ -6,10 +6,18 @@ and with persistent best-time tracking.
 
 ## Requirements
 
-- Python 3.7+ (standard library only, no dependencies)
+- Python 3.7+ (standard library only, no dependencies on macOS/Linux)
 - A terminal that supports mouse reporting for click controls (most modern
   terminals do: xterm, iTerm2, gnome-terminal, tmux, Windows Terminal, etc.)
   Keyboard controls always work, even without mouse support.
+- **Windows only**: Python's `curses` module isn't shipped on Windows. Install
+  the drop-in replacement once with:
+
+  ```powershell
+  pip install windows-curses
+  ```
+
+  Then run the game normally from cmd, PowerShell, or Windows Terminal.
 
 ## Running
 

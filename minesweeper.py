@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
 """Terminal Minesweeper - mouse & keyboard driven, resizable, with best-time tracking."""
 
-import curses
 import json
 import os
 import random
 import sys
 import time
+
+try:
+    import curses
+except ModuleNotFoundError:
+    sys.stderr.write(
+        "This game requires the 'curses' terminal library, which Windows's "
+        "standard Python does not ship.\n"
+        "Fix: pip install windows-curses\n"
+        "Then run the game again in the same terminal (cmd, PowerShell, or "
+        "Windows Terminal).\n"
+    )
+    sys.exit(1)
 
 SCORES_PATH = os.path.expanduser("~/.minesweeper_scores.json")
 

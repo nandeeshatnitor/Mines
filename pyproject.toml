@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "terminal-mines"
+version = "1.0.0"
+description = "A fully-featured Minesweeper game for the terminal, playable with mouse or keyboard."
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [{ name = "nandeeshatnitor" }]
+keywords = ["minesweeper", "terminal", "curses", "game", "tui"]
+classifiers = [
+    "Environment :: Console :: Curses",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Games/Entertainment :: Puzzle Games",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "windows-curses; platform_system == 'Windows'",
+]
+
+[project.urls]
+Homepage = "https://github.com/nandeeshatnitor/Mines"
+
+[project.scripts]
+mines = "minesweeper:cli"
+
+[tool.setuptools]
+py-modules = ["minesweeper"]

@@ -718,9 +718,20 @@ def main(stdscr):
     ui.run()
 
 
-if __name__ == "__main__":
+def cli():
+    """Console-script entry point (installed as the `mines` command).
+
+    curses.wrapper() puts the terminal in its alternate-screen buffer for
+    the duration of the game (clearing the display) and always restores
+    the shell's prior screen contents and terminal modes on the way out,
+    whether the game exits normally or via an exception.
+    """
     try:
         curses.wrapper(main)
     except KeyboardInterrupt:
         pass
+
+
+if __name__ == "__main__":
+    cli()
     sys.exit(0)

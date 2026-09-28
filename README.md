@@ -22,7 +22,33 @@ and with persistent best-time tracking.
   startup, since QuickEdit otherwise swallows all mouse input (clicks and
   hover alike) before curses ever sees it.
 
-## Running
+## Install as a `mines` command
+
+Install the package (from a cloned checkout, a release tag, or a downloaded
+release archive) and a `mines` command is added to your `PATH`:
+
+```bash
+# from a local clone
+pip install .
+
+# or straight from a tagged release, without cloning
+pip install git+https://github.com/nandeeshatnitor/Mines.git@v1.0.0
+```
+
+Then just run:
+
+```bash
+mines
+```
+
+It clears the screen into the terminal's alternate-screen buffer (the same
+mechanism `vim`, `less`, and `htop` use), runs the game full-screen in your
+current terminal, and on quit (`q`, or normal exit) restores your terminal
+exactly as it was before you ran it — scrollback and all.
+
+### Running without installing
+
+You can still run the script directly, no install required:
 
 ```bash
 python3 minesweeper.py

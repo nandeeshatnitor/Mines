@@ -28,6 +28,33 @@ DIFFICULTIES = [
     ("Custom", None, None, None),
 ]
 
+def _enable_windows_console_mouse():
+    """On native Windows consoles (cmd.exe/PowerShell), QuickEdit Mode
+    intercepts all mouse input for text selection before curses ever sees
+    it, silently breaking both clicks and hover. Turn it off and turn on
+    mouse reporting so mouse events actually reach the app.
+    """
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+
+        kernel32 = ctypes.windll.kernel32
+        STD_INPUT_HANDLE = -10
+        ENABLE_EXTENDED_FLAGS = 0x0080
+        ENABLE_QUICK_EDIT_MODE = 0x0040
+        ENABLE_MOUSE_INPUT = 0x0010
+
+        handle = kernel32.GetStdHandle(STD_INPUT_HANDLE)
+        mode = ctypes.c_uint32()
+        if not kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+            return
+        new_mode = (mode.value & ~ENABLE_QUICK_EDIT_MODE) | ENABLE_EXTENDED_FLAGS | ENABLE_MOUSE_INPUT
+        kernel32.SetConsoleMode(handle, new_mode)
+    except Exception:
+        pass
+
+
 CELL_HIDDEN = 0
 CELL_REVEALED = 1
 CELL_FLAGGED = 2
@@ -686,6 +713,7 @@ class UI:
 
 
 def main(stdscr):
+    _enable_windows_console_mouse()
     ui = UI(stdscr)
     ui.run()
 

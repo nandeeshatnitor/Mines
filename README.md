@@ -18,6 +18,9 @@ and with persistent best-time tracking.
   ```
 
   Then run the game normally from cmd, PowerShell, or Windows Terminal.
+  The game also automatically disables Windows Console "QuickEdit Mode" on
+  startup, since QuickEdit otherwise swallows all mouse input (clicks and
+  hover alike) before curses ever sees it.
 
 ## Running
 
@@ -34,6 +37,7 @@ or, if it's executable:
 ## Features
 
 - **Mouse controls**
+  - Hover: the cell under your mouse is highlighted, even before clicking
   - Left click: reveal a cell (clicking a revealed number chords it)
   - Right click: place/remove a flag
   - Middle click or double-click: chord (reveal all neighbors of a
